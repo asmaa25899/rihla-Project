@@ -1,81 +1,40 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
-# ----------------------
-# Page Config
-# ----------------------
-st.set_page_config(
-    page_title="Sales Dashboard",
-    page_icon="📊",
-    layout="wide"
-)
-
-# ----------------------
 # Title
-# ----------------------
-st.title("📊 Sales Dashboard")
-st.markdown("### Streamlit Dashboard Example")
+st.title("Sales Dashboard 📊")
 
-# ----------------------
-# Generate Sample Data
-# ----------------------
-np.random.seed(42)
+# Upload CSV file
+uploaded_file = st.file_uploader("Upload your sales CSV file", type="csv")
 
-data = pd.DataFrame({
-    "Date": pd.date_range(start="2024-01-01", periods=30),
-    "Sales": np.random.randint(200, 1000, 30),
-    "Profit": np.random.randint(50, 400, 30),
-    "Category": np.random.choice(["Electronics", "Fashion", "Food"], 30)
-})
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
 
-# ----------------------
-# Sidebar Filters
-# ----------------------
-st.sidebar.header("🔍 Filters")
+    st.subheader("📌 Data Preview")
+    st.write(df.head())
 
-category_filter = st.sidebar.multiselect(
-    "Select Category",
-    options=data["Category"].unique(),
-    default=data["Category"].unique()
-)
+    st.subheader("📌 Summary Statistics")
+    st.write(df.describe())
 
-filtered_data = data[data["Category"].isin(category_filter)]
+    # Total Sales
+    total_sales = df["Sales"].sum()
+    st.metric("💰 Total Sales", f"${total_sales}")
 
-# ----------------------
-# KPIs
-# ----------------------
-col1, col2, col3 = st.columns(3)
+    # Sales by Category
+    st.subheader("📌 Sales by Category")
+    sales_by_cat = df.groupby("Category")["Sales"].sum()
 
-col1.metric("💰 Total Sales", f"{filtered_data['Sales'].sum():,}")
-col2.metric("📈 Total Profit", f"{filtered_data['Profit'].sum():,}")
-col3.metric("📦 Orders", filtered_data.shape[0])
+    fig, ax = plt.subplots()
+    sales_by_cat.plot(kind="bar", ax=ax)
+    st.pyplot(fig)
 
-# ----------------------
-# Charts
-# ----------------------
-# col4, col5 = st.columns(2)
+    # Sales Trend
+    st.subheader("📌 Sales Trend Over Time")
+    df["Date"] = pd.to_datetime(df["Date"])
+    sales_trend = df.groupby("Date")["Sales"].sum()
 
-# with col4:
-#     st.subheader("Sales Over Time")
-#     fig, ax = plt.subplots()
-#     ax.plot(filtered_data["Date"], filtered_data["Sales"])
-#     ax.set_xlabel("Date")
-#     ax.set_ylabel("Sales")
-#     st.pyplot(fig)
-
-# with col5:
-#     st.subheader("Sales by Category")
-#     category_sales = filtered_data.groupby("Category")["Sales"].sum()
-#     fig2, ax2 = plt.subplots()
-#     ax2.bar(category_sales.index, category_sales.values)
-#     ax2.set_ylabel("Sales")
-#     st.pyplot(fig2)
-
-# ----------------------
-# Data Table
-# ----------------------
-st.subheader("📄 Raw Data")
-st.dataframe(filtered_data)
+    fig2, ax2 = plt.subplots()
+    sales_trend.plot(ax=ax2, marker="o")
+    st.pyplot(fig2)
 
