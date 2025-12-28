@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 # ----------------------
 # Page Config
@@ -55,26 +55,27 @@ col3.metric("📦 Orders", filtered_data.shape[0])
 # ----------------------
 # Charts
 # ----------------------
-col4, col5 = st.columns(2)
+# col4, col5 = st.columns(2)
 
-with col4:
-    st.subheader("Sales Over Time")
-    fig, ax = plt.subplots()
-    ax.plot(filtered_data["Date"], filtered_data["Sales"])
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Sales")
-    st.pyplot(fig)
+# with col4:
+#     st.subheader("Sales Over Time")
+#     fig, ax = plt.subplots()
+#     ax.plot(filtered_data["Date"], filtered_data["Sales"])
+#     ax.set_xlabel("Date")
+#     ax.set_ylabel("Sales")
+#     st.pyplot(fig)
 
-with col5:
-    st.subheader("Sales by Category")
-    category_sales = filtered_data.groupby("Category")["Sales"].sum()
-    fig2, ax2 = plt.subplots()
-    ax2.bar(category_sales.index, category_sales.values)
-    ax2.set_ylabel("Sales")
-    st.pyplot(fig2)
+# with col5:
+#     st.subheader("Sales by Category")
+#     category_sales = filtered_data.groupby("Category")["Sales"].sum()
+#     fig2, ax2 = plt.subplots()
+#     ax2.bar(category_sales.index, category_sales.values)
+#     ax2.set_ylabel("Sales")
+#     st.pyplot(fig2)
 
 # ----------------------
 # Data Table
 # ----------------------
 st.subheader("📄 Raw Data")
 st.dataframe(filtered_data)
+
